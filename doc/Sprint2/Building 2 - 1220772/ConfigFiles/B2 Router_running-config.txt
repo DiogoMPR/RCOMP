@@ -1,0 +1,129 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.22.96.1
+ip dhcp excluded-address 172.22.97.1
+ip dhcp excluded-address 172.22.97.129
+ip dhcp excluded-address 172.22.98.1
+ip dhcp excluded-address 172.22.98.129
+!
+ip dhcp pool Wifi2
+ network 172.22.96.0 255.255.255.0
+ default-router 172.22.96.1
+ip dhcp pool FloorOne2
+ network 172.22.97.0 255.255.255.128
+ default-router 172.22.97.1
+ip dhcp pool VoIP2
+ network 172.22.97.128 255.255.255.128
+ default-router 172.22.97.129
+ip dhcp pool GroundFloor2
+ network 172.22.98.0 255.255.255.128
+ default-router 172.22.98.1
+ip dhcp pool Dmz2
+ network 172.22.98.128 255.255.255.192
+ default-router 172.22.98.129
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017U883-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+!
+interface FastEthernet1/0.1
+ encapsulation dot1Q 370
+ ip address 172.22.96.1 255.255.255.0
+!
+interface FastEthernet1/0.2
+ encapsulation dot1Q 369
+ ip address 172.22.97.1 255.255.255.128
+!
+interface FastEthernet1/0.3
+ encapsulation dot1Q 372
+ ip address 172.22.97.129 255.255.255.128
+!
+interface FastEthernet1/0.4
+ encapsulation dot1Q 368
+ ip address 172.22.98.1 255.255.255.128
+!
+interface FastEthernet1/0.5
+ encapsulation dot1Q 371
+ ip address 172.22.98.129 255.255.255.192
+!
+interface FastEthernet1/0.6
+ description Backbone
+ encapsulation dot1Q 367
+ ip address 172.22.110.2 255.255.255.0
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+!
+ip classless
+ip route 172.22.108.0 255.255.254.0 172.22.110.1 
+ip route 172.22.100.0 255.255.252.0 172.22.110.3 
+ip route 172.22.104.0 255.255.252.0 172.22.110.4 
+ip route 0.0.0.0 0.0.0.0 172.22.110.1 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+

@@ -1,0 +1,251 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.22.108.129
+ip dhcp excluded-address 172.22.109.1
+ip dhcp excluded-address 172.22.109.129
+ip dhcp excluded-address 172.22.109.193
+!
+ip dhcp pool Wifi1
+ network 172.22.108.128 255.255.255.128
+ default-router 172.22.108.129
+ dns-server 172.22.108.2
+ domain-name rcomp-23-24-dd-g2
+ip dhcp pool VoIP1
+ network 172.22.109.0 255.255.255.128
+ default-router 172.22.109.1
+ option 150 ip 172.22.109.1
+ dns-server 172.22.108.2
+ domain-name rcomp-23-24-dd-g2
+ip dhcp pool FloorOne1
+ network 172.22.109.192 255.255.255.192
+ default-router 172.22.109.193
+ dns-server 172.22.108.2
+ domain-name rcomp-23-24-dd-g2
+ip dhcp pool GroundFloor1
+ network 172.22.109.128 255.255.255.192
+ default-router 172.22.109.129
+ dns-server 172.22.108.2
+ domain-name rcomp-23-24-dd-g2
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX101746VJ-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 5.60.37.67 255.0.0.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.2
+ no ip address
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/0
+ no ip address
+!
+interface FastEthernet1/0.1
+ description Dmz1
+ encapsulation dot1Q 365
+ ip address 172.22.108.1 255.255.255.128
+ ip nat inside
+!
+interface FastEthernet1/0.2
+ description Wifi1
+ encapsulation dot1Q 364
+ ip address 172.22.108.129 255.255.255.128
+ ip access-group 102 in
+ ip nat inside
+!
+interface FastEthernet1/0.3
+ description VoIP1
+ encapsulation dot1Q 366
+ ip address 172.22.109.1 255.255.255.128
+ ip access-group 103 in
+ ip nat inside
+!
+interface FastEthernet1/0.4
+ description GroundFloor1
+ encapsulation dot1Q 362
+ ip address 172.22.109.129 255.255.255.192
+ ip access-group 104 in
+ ip nat inside
+!
+interface FastEthernet1/0.5
+ description FloorOne1
+ encapsulation dot1Q 363
+ ip address 172.22.109.193 255.255.255.192
+ ip access-group 105 in
+ ip nat inside
+!
+interface FastEthernet1/0.6
+ description Backbone
+ encapsulation dot1Q 367
+ ip address 172.22.110.1 255.255.255.0
+ ip access-group 100 in
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ log-adjacency-changes
+ network 172.22.108.0 0.0.1.255 area 1
+ network 172.22.110.0 0.0.0.255 area 0
+ default-information originate
+!
+router rip
+!
+ip nat inside source static tcp 172.22.108.3 443 172.22.110.1 443
+ip nat inside source static tcp 172.22.108.3 80 172.22.110.1 80
+ip nat inside source static tcp 172.22.108.2 53 172.22.110.1 53
+ip nat inside source static udp 172.22.108.2 53 172.22.110.1 53
+ip classless
+ip route 0.0.0.0 0.0.0.0 5.60.37.66
+!
+ip flow-export version 9
+!
+!
+access-list 102 deny ip any host 172.22.108.1
+access-list 102 deny ip any host 172.22.108.129
+access-list 102 deny ip any host 172.22.109.1
+access-list 102 deny ip any host 172.22.109.129
+access-list 102 deny ip any host 172.22.109.193
+access-list 102 permit icmp any 172.22.108.0 0.0.0.127 echo-reply
+access-list 102 permit tcp any 172.22.108.0 0.0.0.127 eq www
+access-list 102 permit tcp any 172.22.108.0 0.0.0.127 eq 443
+access-list 102 permit udp any 172.22.108.0 0.0.0.127 eq domain
+access-list 102 deny ip any 172.22.108.0 0.0.0.127
+access-list 102 permit ip 172.22.108.128 0.0.0.127 any
+access-list 102 permit udp any eq bootpc any eq bootps
+access-list 103 deny ip any host 172.22.108.1
+access-list 103 deny ip any host 172.22.108.129
+access-list 103 deny ip any host 172.22.109.1
+access-list 103 deny ip any host 172.22.109.129
+access-list 103 deny ip any host 172.22.109.193
+access-list 103 permit icmp any 172.22.108.0 0.0.0.127 echo-reply
+access-list 103 permit tcp any 172.22.108.0 0.0.0.127 eq www
+access-list 103 permit tcp any 172.22.108.0 0.0.0.127 eq 443
+access-list 103 permit udp any 172.22.108.0 0.0.0.127 eq domain
+access-list 103 deny ip any 172.22.108.0 0.0.0.127
+access-list 103 permit ip 172.22.109.0 0.0.0.127 any
+access-list 103 permit udp any eq bootpc any eq bootps
+access-list 104 deny ip any host 172.22.108.1
+access-list 104 deny ip any host 172.22.108.129
+access-list 104 deny ip any host 172.22.109.1
+access-list 104 deny ip any host 172.22.109.129
+access-list 104 deny ip any host 172.22.109.193
+access-list 104 permit icmp any 172.22.108.0 0.0.0.127 echo-reply
+access-list 104 permit tcp any 172.22.108.0 0.0.0.127 eq www
+access-list 104 permit tcp any 172.22.108.0 0.0.0.127 eq 443
+access-list 104 permit udp any 172.22.108.0 0.0.0.127 eq domain
+access-list 104 deny ip any 172.22.108.0 0.0.0.127
+access-list 104 permit ip 172.22.109.128 0.0.0.63 any
+access-list 104 permit udp any eq bootpc any eq bootps
+access-list 105 deny ip any host 172.22.108.1
+access-list 105 deny ip any host 172.22.108.129
+access-list 105 deny ip any host 172.22.109.1
+access-list 105 deny ip any host 172.22.109.129
+access-list 105 deny ip any host 172.22.109.193
+access-list 105 permit icmp any 172.22.108.0 0.0.0.127 echo-reply
+access-list 105 permit tcp any 172.22.108.0 0.0.0.127 eq www
+access-list 105 permit tcp any 172.22.108.0 0.0.0.127 eq 443
+access-list 105 permit udp any 172.22.108.0 0.0.0.127 eq domain
+access-list 105 deny ip any 172.22.108.0 0.0.0.127
+access-list 105 permit ip 172.22.109.192 0.0.0.63 any
+access-list 105 permit udp any eq bootpc any eq bootps
+access-list 100 deny ip any host 172.22.109.129
+access-list 100 permit ip any 172.22.109.128 0.0.0.63
+access-list 100 deny ip 172.22.109.192 0.0.0.63 any
+access-list 100 deny ip any host 172.22.109.193
+access-list 100 permit ip any 172.22.109.192 0.0.0.63
+access-list 100 deny ip any host 172.22.108.1
+access-list 100 permit icmp any 172.22.108.0 0.0.0.127 echo-reply
+access-list 100 permit ospf any any
+!
+!
+!
+!
+!
+dial-peer voice 372 voip
+ destination-pattern 2...
+ session target ipv4:172.22.110.2
+!
+dial-peer voice 377 voip
+ destination-pattern 3...
+ session target ipv4:172.22.110.3
+!
+dial-peer voice 382 voip
+ destination-pattern 4...
+ session target ipv4:172.22.110.4
+!
+telephony-service
+ no auto-reg-ephone
+ max-ephones 20
+ max-dn 20
+ ip source-address 172.22.109.1 port 2000
+!
+ephone-dn 1
+ number 1000
+!
+ephone-dn 2
+ number 1001
+!
+ephone 2
+ device-security-mode none
+ mac-address 0003.E41A.8838
+ type 7960
+ button 1:2
+!
+ephone 1
+ device-security-mode none
+ mac-address 0005.5EB5.EAD5
+ type 7960
+ button 1:1
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end

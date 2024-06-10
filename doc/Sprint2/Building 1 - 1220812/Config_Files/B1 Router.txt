@@ -1,0 +1,138 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.22.108.1
+ip dhcp excluded-address 172.22.108.129
+ip dhcp excluded-address 172.22.109.1
+ip dhcp excluded-address 172.22.109.129
+ip dhcp excluded-address 172.22.109.193
+!
+ip dhcp pool Dmz1
+ network 172.22.108.0 255.255.255.128
+ default-router 172.22.108.1
+ip dhcp pool Wifi1
+ network 172.22.108.128 255.255.255.128
+ default-router 172.22.108.129
+ip dhcp pool VoIP1
+ network 172.22.109.0 255.255.255.128
+ default-router 172.22.109.1
+ip dhcp pool FloorOne1
+ network 172.22.109.192 255.255.255.192
+ default-router 172.22.109.193
+ip dhcp pool GroundFloor1
+ network 172.22.109.128 255.255.255.192
+ default-router 172.22.109.129
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX10176FA7-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 5.60.37.67 255.0.0.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.2
+ no ip address
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/0
+ no ip address
+!
+interface FastEthernet1/0.1
+ description Dmz1
+ encapsulation dot1Q 365
+ ip address 172.22.108.1 255.255.255.128
+!
+interface FastEthernet1/0.2
+ description Wifi1
+ encapsulation dot1Q 364
+ ip address 172.22.108.129 255.255.255.128
+!
+interface FastEthernet1/0.3
+ description VoIP1
+ encapsulation dot1Q 366
+ ip address 172.22.109.1 255.255.255.128
+!
+interface FastEthernet1/0.4
+ description GroundFloor1
+ encapsulation dot1Q 362
+ ip address 172.22.109.129 255.255.255.192
+!
+interface FastEthernet1/0.5
+ description FloorOne1
+ encapsulation dot1Q 363
+ ip address 172.22.109.193 255.255.255.192
+!
+interface FastEthernet1/0.6
+ description Backbone
+ encapsulation dot1Q 367
+ ip address 172.22.110.1 255.255.255.0
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+!
+ip classless
+ip route 172.22.96.0 255.255.252.0 172.22.110.2 
+ip route 172.22.100.0 255.255.252.0 172.22.110.3 
+ip route 172.22.104.0 255.255.252.0 172.22.110.4 
+ip route 0.0.0.0 0.0.0.0 5.60.37.66 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+

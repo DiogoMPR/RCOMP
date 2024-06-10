@@ -1,0 +1,84 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017US72-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 5.60.37.66 255.0.0.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/0
+ ip address 5.60.37.93 255.255.255.252
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 172.22.108.0 255.255.254.0 5.60.37.67 
+ip route 172.22.96.0 255.255.252.0 5.60.37.67 
+ip route 172.22.100.0 255.255.252.0 5.60.37.67 
+ip route 172.22.104.0 255.255.252.0 5.60.37.67 
+ip route 0.0.0.0 0.0.0.0 5.60.37.67 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
